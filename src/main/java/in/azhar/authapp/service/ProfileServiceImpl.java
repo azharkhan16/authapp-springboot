@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,8 @@ public class ProfileServiceImpl implements ProfileService{
                 new UsernameNotFoundException("User not found: "+email));
         return convertToProfileResponse(existingUser);
     }
+
+
 
     private ProfileResponse convertToProfileResponse(UserEntity newProfile) {
 
