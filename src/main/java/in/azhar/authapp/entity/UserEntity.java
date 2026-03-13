@@ -29,7 +29,7 @@ public class UserEntity {
     private String email;
     private String password;
     private String verifyOtp;
-    private boolean isAccountVerified;
+    private Boolean isAccountVerified;
     private Long verifyOtpExpiredAt;
     private String resetOtp;
     private Long resetOtpExpiredAt;
