@@ -2,9 +2,11 @@ package in.azhar.authapp.controller;
 
 import in.azhar.authapp.io.AuthRequest;
 import in.azhar.authapp.io.AuthResponse;
+import in.azhar.authapp.io.ResetPasswordRequest;
 import in.azhar.authapp.service.AppUserDetailsService;
 import in.azhar.authapp.service.ProfileService;
 import in.azhar.authapp.util.JwtUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -81,6 +83,15 @@ public class AuthController {
     public void sendResetOtp(@RequestParam String email) {
         try {
             profileService.sendResetOtp(email);
+        }catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public void resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        try {
+            profileService.resetPassword(request.getEmail(), request.getOtp(), request.getNewPassword());
         }catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
