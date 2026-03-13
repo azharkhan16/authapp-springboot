@@ -20,6 +20,7 @@ public class ProfileServiceImpl implements ProfileService{
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     public ProfileResponse createProfile(ProfileRequest request) {
@@ -38,7 +39,31 @@ public class ProfileServiceImpl implements ProfileService{
         return convertToProfileResponse(existingUser);
     }
 
+    @Override
+    public void sendResetOtp(String email) {
+        UserEntity existingEntity = userRepository.findByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException("User not found: "+email));
 
+        //Generate 6 digit otp
+        String otp = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
+
+        //Calculate expiry time (currentTime + 15 min in milliseconds)
+        long expiryTime = System.currentTimeMillis() + (1000* 60 * 15);
+
+        //update the profile/user
+        existingEntity.setResetOtp(otp);
+        existingEntity.setResetOtpExpiredAt(expiryTime);
+
+        //save to the database
+        userRepository.save(existingEntity);
+
+        try {
+            //TODO: send the reset otp to email
+            emailService.sendResetOtpEmail(existingEntity.getEmail(), otp);
+        } catch (Exception ex) {
+            throw new RuntimeException("Unable to send email");
+        }
+    }
 
     private ProfileResponse convertToProfileResponse(UserEntity newProfile) {
 

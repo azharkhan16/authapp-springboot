@@ -33,6 +33,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         if (PUBLIC_URLS.contains(path)) {
             filterChain.doFilter(request, response);
+            return;
         }
 
         String jwt = null;
