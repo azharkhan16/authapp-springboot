@@ -20,6 +20,7 @@ public class ProfileController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public ProfileResponse register(@Valid @RequestBody ProfileRequest request) {
+        System.out.println("REGISTER API HIT -> " + request.getEmail());
         ProfileResponse response = profileService.createProfile(request);
         //TODO: send welcome email
         emailService.sendWelcomeEmail(response.getEmail(), response.getName());
